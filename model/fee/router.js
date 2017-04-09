@@ -7,7 +7,7 @@ router.route('/')
   .post((...args) => {
     controller.create(...args);
     const io = controller.getIO();
-    io.emit('monitor', {message:'message', warn:0, time:'2017-2-2'});
+    io.emit('monitor', {message:'message', warn:0, time:'2017-2-2 19:22:33'});
   });
 
 router.route('/:id')
