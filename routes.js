@@ -5,6 +5,7 @@ const fee = require('./model/fee/router');
 const entry = require('./model/entry/router');
 const verfication = require('./model/verfication/router');
 const entryRecord = require('./model/entryRecord/router');
+const transfer = require('./model/transfer/router');
 const path = require('path');
 
 router.route('/').get((req, res) => {
@@ -17,5 +18,6 @@ router.use('/fee', fee);
 router.use('/entry', entry);
 router.use('/verfication', verfication);
 router.use('/entryRecord', entryRecord);
+router.use('/transfer', transfer);
 
 module.exports = router;
