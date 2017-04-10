@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const verficationSchema = new Schema({
+const entryRecordSchema = new Schema({
   serialNo: { type: String, required: true },
   entry_siteNo:  { type: String, required: true },
   entry_gateNo:  { type: String, required: true },
@@ -12,5 +12,13 @@ const verficationSchema = new Schema({
   entry_gateType:{type: Number, required: true}
 });
 
+entryRecordSchema.pre('save', function(next) {
+    if (this.isNew) {
+        this.entry_time = Date.now();
+    }
 
-module.exports = mongoose.model('Verfication', verficationSchema);
+    next();
+});
+   
+
+module.exports = mongoose.model('EntryRecord', entryRecordSchema);
