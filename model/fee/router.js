@@ -14,4 +14,7 @@ router.route('/:id')
   .get((...args) => controller.findById(...args))
   .delete((...args) => controller.remove(...args));
 
+router.route('/search')
+  .post((...args) => controller.find(...args))
+
 module.exports = router;
