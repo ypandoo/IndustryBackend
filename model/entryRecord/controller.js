@@ -10,14 +10,14 @@ class EntryRecordController extends Controller {
     //Notice monitor
     const io = this.getIO();
     const recordData = {
-        cardNo:req.body.cardNo, 
+        cardNo:'卡号:'+req.body.cardNo, 
         warn:0, 
         ATC:req.body.ATC, 
-        entry_gateNo:req.body.entry_gateNo, 
+        entry_gateNo:'闸机编号:'+req.body.entry_gateNo, 
         entry_gateType:req.body.entry_gateType,
-        entry_siteNo:req.body.entry_siteNo,
+        entry_siteNo:'站点编号:'+req.body.entry_siteNo,
         entry_time: req.body.entry_time,
-        serialNo:req.body.serialNo
+        serialNo:'序列号:'+req.body.serialNo
     };
     io.emit('monitor', recordData);
 
@@ -39,7 +39,7 @@ class EntryRecordController extends Controller {
               status: 0
             }
             feeFacade.create(feeData).then(doc=>{
-              var requireForFee ={
+              const requireForFee ={
                 interfaceID:"oda_request_pay",
                 currencyCode:doc.currencyCode, 
                 pan:doc.pan, 
@@ -56,7 +56,7 @@ class EntryRecordController extends Controller {
               request.post(url,{ json: true, body: requireForFee }
                ,function(error, response, body){
                   console.log(body);
-                  var feeUpdate = {
+                  const feeUpdate = {
                     status:1,
                     ACCT_BALANCE: body.oda_request_pay_response_info.ACCT_BALANCE,
                     status_describle:body.response_status,
@@ -66,6 +66,19 @@ class EntryRecordController extends Controller {
                   feeFacade.update({_id, _id}, feeUpdate).then(doc=>{
                     console.log('update fee request');
                     console.log(doc);
+                        //Notice monitor
+                    // const io = this.getIO();
+                    const recordData = {
+                        cardNo:'卡号:'+requireForFee.pan, 
+                        warn:0, 
+                        ATC:"", 
+                        entry_gateNo:'请款金额:'+requireForFee.amount, 
+                        entry_gateType:3,
+                        entry_siteNo:'商户号:'+requireForFee.merchantNum,
+                        entry_time: new Date(),
+                        serialNo:'关联号:'+feeUpdate.ref_num
+                    };
+                    io.emit('monitor', recordData);
                   });
                 });
 
