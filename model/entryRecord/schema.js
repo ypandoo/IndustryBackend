@@ -9,7 +9,8 @@ const entryRecordSchema = new Schema({
   cardNo:{type: String, required: true},
   ATC:  { type: String, required: true },
   entry_time: {type: Date, require: true},
-  entry_gateType:{type: Number, required: true}
+  entry_gateType:{type: Number, required: true},
+  used:{type:Number, required:true, default:0}
 });
 
 entryRecordSchema.pre('save', function(next) {
