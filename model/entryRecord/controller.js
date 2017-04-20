@@ -41,7 +41,7 @@ class EntryRecordController extends Controller {
                         .findOne({ entry_gateType: !recordData.entry_gateType, cardNo: recordData.cardNo, used: 0 })
                         .then(doc => {
                             console.log(doc);
-                            if (!doc) { throw new Error('Cannot find corresponding enter record!') }
+                            if (!doc) { throw new Error('扣款失败：不能找到对应的进站记录!') }
 
                             //set used for both record
                             that.facade.update({ _id: doc._id }, { used: 1 });
@@ -74,6 +74,18 @@ class EntryRecordController extends Controller {
                                     if (!body) {
                                         //set require for fee status error
                                         feeFacade.update({ _id: _id, status: 1 });
+                                        const errData = {
+                                            cardNo: doc.pan,
+                                            warn: 1,
+                                            ATC: "扣款失败：CSC communication error!",
+                                            entry_gateNo: '',
+                                            entry_gateType: 3,
+                                            entry_siteNo: "扣款失败：CSC communication error!",
+                                            entry_time: new Date().toISOString(),
+                                            serialNo: ''
+                                        };
+                                        io.emit('monitor', errData);
+
                                         return res.status(201).json({ response_status: 'Failed', response_describe: "CSC communication error!", data: doc });
                                     }
 
